@@ -41,7 +41,20 @@ def markup_sentence(s, modifiers, targets):
     markup.pruneSelfModifyingRelationships()
     markup.dropInactiveModifiers()
     return markup_sentence
+def anatomyRecategorize(g,t,categoryRule):
+    """create a new category based on categoryRule"""
+    if not t.isA( categoryRule[0] ):
+        return 
+    mods = g.predecessors(t)
 
+    if mods:
+        mmods = matchedModifiers(g,t,categoryRule[1])
+        if mmods:
+            newCategory = []
+            for m in mmods:
+                nc = "_".join([m.lower(),categoryRule[0]])
+                newCategory.append(nc)
+            t.replaceCategory(categoryRule[0],newCategory)
 def genericClassifier(g,t,rule):
     """based on the modifiers of the target 't' and the provide rule in 'rule' classify the target node"""
     mods = g.predecessors(t)
