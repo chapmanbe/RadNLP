@@ -41,6 +41,21 @@ def markup_sentence(s, modifiers, targets):
     markup.pruneSelfModifyingRelationships()
     markup.dropInactiveModifiers()
     return markup_sentence
+def getSeverity(g,t,severityRule):
+    if not t.isA(severityRule[0]):
+        return []
+    smods = returnMatchedModifiers(g,t,severityRule[1])
+    if smods:
+        severityResults = []
+        for m in smods:
+            mgd = m.getMatchedGroupDictionary()
+            val = mgd.get('value')
+            units = mgd.get('unit')
+            phrase = m.getPhrase()
+        severityResults.append((phrase,val,units))
+        return severityResults
+    else:
+        return []
 def anatomyRecategorize(g,t,categoryRule):
     """create a new category based on categoryRule"""
     if not t.isA( categoryRule[0] ):
