@@ -40,7 +40,7 @@ def markup_sentence(s, modifiers, targets):
     markup.applyModifiers()
     markup.pruneSelfModifyingRelationships()
     markup.dropInactiveModifiers()
-    return markup_sentence
+    return markup
 def getSeverity(g,t,severityRule):
     if not t.isA(severityRule[0]):
         return []
