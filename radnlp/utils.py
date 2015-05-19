@@ -40,4 +40,15 @@ def markup_sentence(s, modifiers, targets):
     markup.applyModifiers()
     markup.pruneSelfModifyingRelationships()
     markup.dropInactiveModifiers()
-    return markup
+    return markup_sentence
+
+def genericClassifier(g,t,rule):
+    """based on the modifiers of the target 't' and the provide rule in 'rule' classify the target node"""
+    mods = g.predecessors(t)
+    if not mods:
+        return rule["DEFAULT"]
+    for r in rule["RULES"]:
+        if( modifies(g,t,r[1]) ):
+            return r[0]
+    return rule["DEFAULT"]
+
