@@ -1,4 +1,13 @@
-import urllib2
+try:
+    import urllib2.urlopen as urlopen
+except:
+    import urllib.request.urlopen as urlopen
+
+try:
+    import urllib2.urlparse as urlparse
+except:
+    import urllib.parse as urlparse
+
 
 def instantiateSchema(values,rule):
     """evaluates rule by substituting values into rule and evaluating the resulting literal.
@@ -17,12 +26,12 @@ def assignSchema(values,rules):
 def readSchema(fname):
     """read the schema and schema classifier functionality"""
 
-    p = urllib2.urlparse.urlparse(fname)
+    p = urlparse.urlparse(fname)
 
     if not p.scheme:
         fname = "file://"+fname
 
-    f0 = urllib2.urlopen(fname)
+    f0 = urlopen(fname)
 
     schema = {}
     tmp = f0.readlines()
@@ -31,5 +40,3 @@ def readSchema(fname):
         if( t[0][0] != "#" ):
             schema[int(t[0])]=(t[1],t[2])
     return schema
-
-

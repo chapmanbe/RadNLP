@@ -1,16 +1,24 @@
 """This module containes functions for reading rules and schema for document
 classification based on pyConTextNLP parsing"""
-import urllib2 
+try:
+    import urllib2.urlopen as urlopen
+except:
+    import urllib.request.urlopen as urlopen
+
+try:
+    import urllib2.urlparse as urlparse
+except:
+    import urllib.parse as urlparse
 
 def readRules(fname):
     """read the sentence level rules"""
 
-    p = urllib2.urlparse.urlparse(fname)
+    p = urlparse.urlparse(fname)
 
     if not p.scheme:
         fname = "file://"+fname
 
-    f0 = urllib2.urlopen(fname)
+    f0 = urlopen(fname)
 
     data = f0.readlines()
     class_rules = {}
@@ -36,5 +44,3 @@ def readRules(fname):
                 severity_rules.append((tmp[1],[r for r in tmp[2:]]))
 
     return class_rules, category_rules, severity_rules
-
-

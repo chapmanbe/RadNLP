@@ -1,1 +1,1 @@
-"""This module provides some functionality for working with RadLex"""
+"""This module will provide some functionality for working with RadLex"""
