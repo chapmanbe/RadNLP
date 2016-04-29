@@ -1,13 +1,12 @@
 """This module containes functions for reading rules and schema for document
 classification based on pyConTextNLP parsing"""
-try:
-    import urllib2.urlopen as urlopen
-except:
-    import urllib.request.urlopen as urlopen
+import platform
 
-try:
+if platform.python_version_tuple()[0] == '2':
+    import urllib2.urlopen as urlopen
     import urllib2.urlparse as urlparse
-except:
+else:
+    from urllib.request import urlopen
     import urllib.parse as urlparse
 
 def readRules(fname):
@@ -25,9 +24,12 @@ def readRules(fname):
     category_rules = []
     severity_rules = []
     for d in data:
-        tmp = d.strip().split(",")
+        if platform.python_version_tuple()[0] == '2':
+            tmp = d.strip().split(",")
+        else:
+            tmp = d.decode('utf-8').strip().split(",")
         if not tmp[0][0] == "#": # # comment character
-            if( tmp[0] == "@CLASSIFICATION_RULE" ):
+            if tmp[0] == "@CLASSIFICATION_RULE":
                 r = class_rules.get(tmp[1],{"LABEL":"","DEFAULT":"","RULES":[]})
                 value = int(tmp[3])
                 if tmp[2] == 'DEFAULT':
