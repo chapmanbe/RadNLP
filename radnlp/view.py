@@ -4,7 +4,7 @@ Functions and variables for viewing marked up reports
 from pyConTextNLP.display.html import mark_document_with_html
 from . data import get_classification_result_brief as gcrb
 import networkx as nx
-
+from . data import get_brief_classification
 clrs = {\
 "finding": "blue",
 "definite_negated_existence": "red",
@@ -27,7 +27,37 @@ codingKey = {\
 8: "Positive/Certain/Acute"
 }
 
-def markup_to_html(markup_rslt, color_map=None):
+def classrslt_to_str(crslt, joiner="\n"):
+    """
+
+    """
+
+    class_rslts = get_brief_classification(crslt)
+    class_str = joiner.join(["%s: %s"%(k,codingKey.get(v,"NA")) for
+                           k, v in class_rslts.items()])
+
+    return class_str
+def classrslt_to_html(crslt, joiner="<br><br>"):
+    """
+
+    """
+
+    class_rslts = get_brief_classification(crslt)
+    class_str = joiner.join(["<b>%s</b> (%s)"%(k,codingKey.get(v,"NA")) for
+                           k, v in class_rslts.items()])
+
+    return class_str
+def classification_to_html(markup_rslt, joiner="<br><br>"):
+    """
+
+    """
+
+    class_rslts = gcrb(markup_rslt)
+    class_str = joiner.join(["<b>%s</b> (%s)"%(k,codingKey.get(v,"NA")) for
+                           k, v in class_rslts.items()])
+
+    return class_str
+def markup_to_html(markup_rslt, color_map=None, joiner="<br><br>"):
     """
 
     """
@@ -37,13 +67,13 @@ def markup_to_html(markup_rslt, color_map=None):
     mt = mark_document_with_html(markup_rslt.context_document,
                                  colors=color_map)
     class_rslts = gcrb(markup_rslt)
-    class_str = "; ".join(["%s (%s)"%(k,codingKey.get(v,"NA")) for
+    class_str = joiner.join(["<b>%s</b> (%s)"%(k,codingKey.get(v,"NA")) for
                            k, v in class_rslts.items()])
     txt = """
           <table style="width:100">
           <caption>PE Finder Case Review</caption>
           <tr><th>report</th><th>classification</th></tr>
-          <tr><td width='500'>%s</td><td width='200'>%s</td></tr>
+          <tr><td width='500'>%s</td><td width='400'>%s</td></tr>
           </table>""" % (mt,class_str)
     return txt
 
