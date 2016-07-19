@@ -57,6 +57,19 @@ def markup_sentence(s, modifiers, targets):
     markup.dropInactiveModifiers()
     return markup
 
+def _merge_markups(rmarkups):
+    if rmarkups:
+        raw_text = " ".join([r.graph["__rawTxt"] for r in rmarkups])
+        newgraph = nx.compose_all(rmarkups)
+        newgraph.graph["__rawTxt"] = raw_text
+        return newgraph
+    else:
+        return nx.DiGraph()
+def mark_report(report, modifiers, targets):
+    return _merge_markups([markup_sentence(s,
+                                          modifiers,
+                                          targets) for s in report])
+
 
 def get_severity(g, t, severity_rule):
     """
@@ -112,3 +125,20 @@ def generic_classifier(g, t, rule):
         if modifies(g, t, r[1]):
             return r[0]
     return rule["DEFAULT"]
+
+def process_report(report, modifier, target,
+                   classification_rules,
+                   category_rules,
+                   _schema,
+                   **kwargs):
+    """
+    """
+    markup = mark_report(split.get_sentences(report),
+                         modifier,
+                         target)
+    return  classify_document_targets(markup,
+                                          classification_rules,
+                                          category_rules,
+                                          severity_rules,
+                                          _schema,
+                                          kwargs)

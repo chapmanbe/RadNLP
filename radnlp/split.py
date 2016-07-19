@@ -2,6 +2,7 @@
 Tools for splitting report and recognizing sections
 """
 import re
+from textblob import TextBlob
 
 r_headings = re.compile(r"""(?P<heading>([A-Z ]+\s)?[A-Z()]+:)""")
 r_digits = re.compile(r"""\d\.""")
@@ -57,7 +58,21 @@ def get_report(txt,terminating_phrases= None):
         return r_digits.sub("",txt)
 
 
-def preprocess_report(txt, fix_enumerated_lists=True, drop_boiler_plate=True):
+def preprocess_report(txt,
+                      fix_enumerated_lists=True,
+                      drop_boiler_plate=True,
+                      canned_phrases=None):
+    """
+    from a string (txt) containing a report, return the relevant
+    portions
+
+    fix_enumerated_lists: boolean.
+        If true, use regular expressions to transform enumerated lists into more sentence like structures.
+    drop_boiler_plate: boolean.
+        If true, only return text preceding canned_phrases
+    canned_phrases: None or list.
+        List of canned phrases to exlcude as boilerplate
+    """
     if fix_enumerated_lists:
         txt = terminate_lists(txt)
     if drop_boiler_plate:
@@ -109,3 +124,11 @@ def split_report(txt):
     headings = get_headings(txt)
     txt, secs = get_sections_by_headings(txt, OrderedDict(), headings)
     return reverse_sections(secs)
+
+def get_sentences(report):
+    """
+    Wrapper around TextBlob
+    generates a TextBlob instance from report and
+    returns the sentences
+    """
+    return [s.raw for s in TextBlob(report).sentences]
