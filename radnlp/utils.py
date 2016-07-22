@@ -1,5 +1,5 @@
 import pyConTextNLP.pyConTextGraph as pyConText
-
+import networkx as nx
 
 def modifies(g, n, modifiers):
     """

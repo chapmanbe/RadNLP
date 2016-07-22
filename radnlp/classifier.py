@@ -42,7 +42,10 @@ def classify_document_targets(doc,
     rslts = {}
 
     qualityInducedUncertainty = False
-    g = doc.getDocumentGraph()
+    try:
+        g = doc.getDocumentGraph()
+    except:
+        g = doc
     targets = [n[0] for n in g.nodes(data=True)
                if n[1].get("category", "") == 'target']
 
@@ -68,9 +71,9 @@ def classify_document_targets(doc,
                 # now need to compare current_rslts to rslts
                 # to select most Positive
                 docr = classify_result(current_rslts, _schema)
-                trslts = rslts.get(current_category, [-1, '', []])
+                trslts = rslts.get(current_category, (-1, '', []]))
                 if trslts[0] < docr:
-                    trslts = [docr, t.getXML(), severity_values]
+                    trslts = (docr, t.getXML(), severity_values)
                 rslts[current_category] = trslts
             else:
                 if t.isA('QUALITY_FEATURE'):
