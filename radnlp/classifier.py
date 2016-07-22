@@ -71,7 +71,7 @@ def classify_document_targets(doc,
                 # now need to compare current_rslts to rslts
                 # to select most Positive
                 docr = classify_result(current_rslts, _schema)
-                trslts = rslts.get(current_category, (-1, '', []]))
+                trslts = rslts.get(current_category, (-1, '', []))
                 if trslts[0] < docr:
                     trslts = (docr, t.getXML(), severity_values)
                 rslts[current_category] = trslts
